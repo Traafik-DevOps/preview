@@ -7,6 +7,7 @@
 - Optional build/minify path:
   - `npm install`
   - `npm run build`
+  - `npm run build:css`
   - `npm run build:watch`
 - Run no-cookies audit for owned runtime code:
   - `npm run audit:no-cookies`
