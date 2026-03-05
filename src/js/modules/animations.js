@@ -8,11 +8,26 @@ export function initAnimations() {
     { selector: '.intro-title', delay: 0 },
     { selector: '.hero--bodycopy', delay: 80 },
     { selector: '.div-block-3', delay: 140 },
-    { selector: '.contact-grid', delay: 200 }
+    { selector: '.contact-grid', delay: 200 },
+    { selector: '.hero-title', delay: 0 },
+    { selector: '.hero-text', delay: 80 },
+    { selector: '.trail-form', delay: 140 },
+    { selector: '.feature-tabs-wrap', delay: 200 },
+    { selector: '.metrics-grid', delay: 260 },
+    { selector: '.full-width-video-wrap', delay: 320 }
   ];
 
   animationTargets.forEach(({ selector, delay }) => {
     document.querySelectorAll(selector).forEach((node) => {
+      if (node.dataset.animReady === '1') {
+        return;
+      }
+      node.dataset.animReady = '1';
+
+      if (node.closest('.transition') || node.closest('.w-slider-mask') || node.closest('.w-tab-content')) {
+        return;
+      }
+
       node.style.opacity = '0';
       node.style.transform = 'translateY(16px)';
       node.style.willChange = 'opacity, transform';

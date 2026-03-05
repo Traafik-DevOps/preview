@@ -490,3 +490,31 @@ textarea.w-input,textarea.w-select {
     grid-area:span 1/span 2/span 1/span 2;
   }
 }
+
+/* Parity Patch: Motorists Missing Selectors */
+
+.hero-section {
+  padding-top:200px;
+  padding-bottom:120px;
+}
+
+@media screen and (max-width:479px) {
+  .hero-section {
+    padding-top:136px;
+    padding-bottom:80px;
+  }
+}
+
+@media screen and (max-width:767px) {
+  .hero-section {
+    padding-top:168px;
+    padding-bottom:88px;
+  }
+}
+
+@media screen and (max-width:991px) {
+  .hero-section {
+    padding-top:184px;
+    padding-bottom:104px;
+  }
+}

@@ -506,3 +506,75 @@ textarea.w-input,textarea.w-select {
     grid-area:span 1/span 2/span 1/span 2;
   }
 }
+
+/* Parity Patch: Law Missing Selectors */
+
+.dropdown-list-row.dark:hover {
+  background-color:#ffffff1a;
+}
+
+.dropdown-toggle.dark {
+  color:var(--midnight-blue);
+  transition:color .3s,background-color .3s;
+}
+
+.dropdown-toggle.dark:hover {
+  color:var(--ultramarine-blue);
+}
+
+.log-extra-text.dark {
+  color:var(--midnight-blue);
+}
+
+.metrics-big-paragraph.dark {
+  color:var(--midnight-blue);
+}
+
+.pricing-paragraph.dark {
+  color:#0f0a4dbf;
+}
+
+.pricing-price.dark {
+  color:var(--midnight-blue);
+}
+
+.pricing-title.dark {
+  color:var(--midnight-blue);
+}
+
+@media screen and (max-width:479px) {
+  .pricing-paragraph.dark.mobile-hide,.pricing-paragraph.mobile-hide {
+    display:none;
+  }
+}
+
+@media screen and (max-width:479px) {
+  .pricing-price.dark.table,.pricing-price.table {
+    font-size:18px;
+    line-height:24px;
+  }
+}
+
+@media screen and (max-width:479px) {
+  .pricing-title.dark.table,.pricing-title.table {
+    margin-bottom:8px;
+    font-size:14px;
+    line-height:20px;
+  }
+}
+
+@media screen and (max-width:767px) {
+  .pricing-price.dark.table,.pricing-price.table {
+    margin-bottom:0;
+    font-size:30px;
+    line-height:36px;
+  }
+}
+
+@media screen and (max-width:767px) {
+  .pricing-title.dark.table,.pricing-title.table {
+    margin-bottom:12px;
+    font-size:18px;
+    line-height:24px;
+  }
+}
