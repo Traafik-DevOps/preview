@@ -29,64 +29,6 @@ export function initNav() {
   const isCollapsed = () => window.innerWidth <= collapseAt;
   let isOpen = false;
 
-  function logNavState(stage) {
-    const menuStyles = window.getComputedStyle(navMenu);
-    const links = Array.from(navMenu.querySelectorAll('a'));
-    console.groupCollapsed(`[nav-debug] ${stage}`);
-    console.log('window.innerWidth', window.innerWidth);
-    console.log('collapseAt', collapseAt);
-    console.log('isCollapsed', isCollapsed());
-    console.log('isOpen', isOpen);
-    console.log('navMenu inline styles', navMenu.getAttribute('style'));
-    console.log('navMenu computed', {
-      display: menuStyles.display,
-      visibility: menuStyles.visibility,
-      opacity: menuStyles.opacity,
-      color: menuStyles.color,
-      backgroundColor: menuStyles.backgroundColor,
-      position: menuStyles.position,
-      top: menuStyles.top,
-      zIndex: menuStyles.zIndex,
-      height: menuStyles.height
-    });
-    links.forEach((link, index) => {
-      const style = window.getComputedStyle(link);
-      const rect = link.getBoundingClientRect();
-      const firstChild = link.firstElementChild;
-      const childStyle = firstChild ? window.getComputedStyle(firstChild) : null;
-      console.log(`link[${index}]`, {
-        text: link.textContent?.trim(),
-        className: link.className,
-        inlineStyle: link.getAttribute('style'),
-        rect: {
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height
-        },
-        computed: {
-          display: style.display,
-          visibility: style.visibility,
-          opacity: style.opacity,
-          color: style.color,
-          fontSize: style.fontSize,
-          lineHeight: style.lineHeight
-        },
-        childComputed: childStyle
-          ? {
-              color: childStyle.color,
-              display: childStyle.display,
-              opacity: childStyle.opacity,
-              visibility: childStyle.visibility,
-              fontSize: childStyle.fontSize,
-              lineHeight: childStyle.lineHeight
-            }
-          : null
-      });
-    });
-    console.groupEnd();
-  }
-
   if (!menuButton.getAttribute('tabindex')) {
     menuButton.setAttribute('tabindex', '0');
   }
@@ -184,19 +126,16 @@ export function initNav() {
       document.body.style.overflow = '';
     }
 
-    logNavState('render');
   }
 
   function openMenu() {
     isOpen = true;
     render();
-    logNavState('openMenu');
   }
 
   function closeMenu() {
     isOpen = false;
     render();
-    logNavState('closeMenu');
   }
 
   function toggleMenu() {
