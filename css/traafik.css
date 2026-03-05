@@ -957,6 +957,19 @@ label {
   padding-left: 0.2rem;
   padding-right: 0.2rem;
 }
+.how-it-works-page .how-it-works-video {
+  width: min(92vw, 960px);
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+  margin: 1.5rem auto 0;
+  display: block;
+}
+.how-it-works-page .section.law-e {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  margin-bottom: 0;
+}
 @media screen and (min-width: 1440px) {
   .copywrite {
     font-size: 17px;
@@ -1189,6 +1202,10 @@ label {
   }
   .placeholder {
     display: block;
+  }
+  .how-it-works-page .how-it-works-video {
+    width: min(90vw, 360px);
+    margin-top: 1rem;
   }
 }
 @media screen and (max-width: 479px) {

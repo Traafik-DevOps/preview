@@ -3,21 +3,25 @@ import { trackFormEvent } from './observability.js';
 
 const DIALTONE_ENDPOINT = 'https://dialtoneapp.com/api/v1/store-data/traafik';
 
-function buildPayload(form) {
-  const nameInput = form.querySelector('#FNAME-2');
-  const emailInput = form.querySelector('#EMAIL-5');
-  const phoneInput = form.querySelector('#PHONE-2');
-  const companyInput = form.querySelector('#CMPNY');
-  const websiteInput = form.querySelector('#WEB-2');
-  const positionInput = form.querySelector('#POS-2');
+function getFirstValue(form, selectors) {
+  for (const selector of selectors) {
+    const input = form.querySelector(selector);
+    if (input && typeof input.value === 'string') {
+      return input.value.trim();
+    }
+  }
 
+  return '';
+}
+
+function buildPayload(form) {
   return {
-    name: nameInput ? nameInput.value.trim() : '',
-    email: emailInput ? emailInput.value.trim() : '',
-    phone: phoneInput ? phoneInput.value.trim() : '',
-    company: companyInput ? companyInput.value.trim() : '',
-    website: websiteInput ? websiteInput.value.trim() : '',
-    position: positionInput ? positionInput.value.trim() : ''
+    name: getFirstValue(form, ['#FNAME-2', '#FNAME', '#NAME', 'input[name="FNAME"]', 'input[name="NAME"]']),
+    email: getFirstValue(form, ['#EMAIL-5', '#EMAIL', 'input[name="EMAIL"]']),
+    phone: getFirstValue(form, ['#PHONE-2', '#PHONE', 'input[name="PHONE"]']),
+    company: getFirstValue(form, ['#CMPNY', '#COMPANY', 'input[name="CMPNY"]', 'input[name="COMPANY"]']),
+    website: getFirstValue(form, ['#WEB-2', '#WEBSITE', 'input[name="WEB"]', 'input[name="WEBSITE"]']),
+    position: getFirstValue(form, ['#POS-2', '#TITLE-2', '#TITLE', 'input[name="POS"]', 'input[name="TITLE"]'])
   };
 }
 
@@ -109,34 +113,37 @@ function setSubmitButtonLoading(form, isLoading) {
 }
 
 export function initForms() {
-  const form = document.getElementById('wf-form-home-page-form');
-  if (!isOwnedForm(form)) {
-    return;
-  }
+  const forms = document.querySelectorAll('form.form-contact');
 
-  updateFormUiState(form, 'idle');
+  forms.forEach((form) => {
+    if (!isOwnedForm(form)) {
+      return;
+    }
 
-  // Capture submit first so third-party listeners (including Webflow) never run.
-  form.addEventListener(
-    'submit',
-    async (event) => {
-      if (!isOwnedForm(event.currentTarget)) {
-        return;
-      }
+    updateFormUiState(form, 'idle');
 
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      setSubmitButtonLoading(event.currentTarget, true);
+    // Capture submit first so third-party listeners (including Webflow) never run.
+    form.addEventListener(
+      'submit',
+      async (event) => {
+        if (!isOwnedForm(event.currentTarget)) {
+          return;
+        }
 
-      const response = await submitOwnedForm(event.currentTarget);
-      setSubmitButtonLoading(event.currentTarget, false);
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        setSubmitButtonLoading(event.currentTarget, true);
 
-      if (response && response.status === 201) {
-        updateFormUiState(event.currentTarget, 'success');
-      } else {
-        updateFormUiState(event.currentTarget, 'error');
-      }
-    },
-    { capture: true }
-  );
+        const response = await submitOwnedForm(event.currentTarget);
+        setSubmitButtonLoading(event.currentTarget, false);
+
+        if (response && response.status === 201) {
+          updateFormUiState(event.currentTarget, 'success');
+        } else {
+          updateFormUiState(event.currentTarget, 'error');
+        }
+      },
+      { capture: true }
+    );
+  });
 }
