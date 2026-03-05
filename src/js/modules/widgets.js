@@ -16,14 +16,31 @@ function initSlider(slider) {
   const infinite = parseBooleanAttr(slider.getAttribute('data-infinite'));
   const autoplay = parseBooleanAttr(slider.getAttribute('data-autoplay'));
   const delay = Number.parseInt(slider.getAttribute('data-delay') || '3000', 10);
+  const duration = Number.parseInt(slider.getAttribute('data-duration') || '500', 10);
+  const animation = (slider.getAttribute('data-animation') || '').toLowerCase();
+  const isFade = animation === 'fade';
   let index = 0;
   let timer = null;
 
-  mask.style.display = 'flex';
-  mask.style.transition = 'transform 500ms ease';
-  slides.forEach((slide) => {
-    slide.style.flex = '0 0 100%';
-  });
+  if (isFade) {
+    mask.style.position = 'relative';
+    mask.style.display = 'block';
+    slides.forEach((slide) => {
+      slide.style.position = 'absolute';
+      slide.style.inset = '0';
+      slide.style.width = '100%';
+      slide.style.height = '100%';
+      slide.style.opacity = '0';
+      slide.style.transition = `opacity ${Number.isFinite(duration) ? duration : 500}ms ease`;
+      slide.style.pointerEvents = 'none';
+    });
+  } else {
+    mask.style.display = 'flex';
+    mask.style.transition = `transform ${Number.isFinite(duration) ? duration : 500}ms ease`;
+    slides.forEach((slide) => {
+      slide.style.flex = '0 0 100%';
+    });
+  }
 
   if (nav) {
     nav.innerHTML = '';
@@ -37,7 +54,16 @@ function initSlider(slider) {
   }
 
   function render() {
-    mask.style.transform = `translateX(-${index * 100}%)`;
+    if (isFade) {
+      slides.forEach((slide, i) => {
+        const active = i === index;
+        slide.style.opacity = active ? '1' : '0';
+        slide.style.pointerEvents = active ? 'auto' : 'none';
+      });
+    } else {
+      mask.style.transform = `translateX(-${index * 100}%)`;
+    }
+
     if (nav) {
       Array.from(nav.children).forEach((dot, i) => {
         dot.classList.toggle('w-active', i === index);
