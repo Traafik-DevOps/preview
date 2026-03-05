@@ -48,11 +48,73 @@ async function submitOwnedForm(form) {
   }
 }
 
+function updateFormUiState(form, state) {
+  const formWrapper = form.closest('.w-form');
+  if (!formWrapper) {
+    return;
+  }
+
+  const done = formWrapper.querySelector('.w-form-done');
+  const fail = formWrapper.querySelector('.w-form-fail');
+
+  if (state === 'success') {
+    form.style.display = 'none';
+    if (done) {
+      done.style.display = 'block';
+    }
+    if (fail) {
+      fail.style.display = 'none';
+    }
+    return;
+  }
+
+  if (state === 'error') {
+    form.style.display = '';
+    if (done) {
+      done.style.display = 'none';
+    }
+    if (fail) {
+      fail.style.display = 'block';
+    }
+    return;
+  }
+
+  form.style.display = '';
+  if (done) {
+    done.style.display = 'none';
+  }
+  if (fail) {
+    fail.style.display = 'none';
+  }
+}
+
+function setSubmitButtonLoading(form, isLoading) {
+  const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
+  if (!submitButton) {
+    return;
+  }
+
+  if (!submitButton.dataset.defaultText) {
+    submitButton.dataset.defaultText = submitButton.value || submitButton.textContent || '';
+  }
+
+  const waitText = submitButton.getAttribute('data-wait') || 'Please wait...';
+  submitButton.disabled = isLoading;
+
+  if ('value' in submitButton) {
+    submitButton.value = isLoading ? waitText : submitButton.dataset.defaultText;
+  } else {
+    submitButton.textContent = isLoading ? waitText : submitButton.dataset.defaultText;
+  }
+}
+
 export function initForms() {
   const form = document.getElementById('wf-form-home-page-form');
   if (!isOwnedForm(form)) {
     return;
   }
+
+  updateFormUiState(form, 'idle');
 
   // Capture submit first so third-party listeners (including Webflow) never run.
   form.addEventListener(
@@ -64,7 +126,16 @@ export function initForms() {
 
       event.preventDefault();
       event.stopImmediatePropagation();
-      await submitOwnedForm(event.currentTarget);
+      setSubmitButtonLoading(event.currentTarget, true);
+
+      const response = await submitOwnedForm(event.currentTarget);
+      setSubmitButtonLoading(event.currentTarget, false);
+
+      if (response && response.status === 201) {
+        updateFormUiState(event.currentTarget, 'success');
+      } else {
+        updateFormUiState(event.currentTarget, 'error');
+      }
     },
     { capture: true }
   );
