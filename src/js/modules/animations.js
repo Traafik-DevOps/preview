@@ -1,19 +1,5 @@
-function isDebugPage() {
-  const path = window.location.pathname;
-  return path.includes('/motorists') || path.includes('/law-enforcement');
-}
-
-function debugLog(...args) {
-  if (!isDebugPage()) {
-    return;
-  }
-  console.log('[animations]', ...args);
-}
-
 function initZoomImages() {
   const zoomImages = Array.from(document.querySelectorAll('.zoom-image'));
-  debugLog('initZoomImages', { count: zoomImages.length });
-
   if (!zoomImages.length) {
     return;
   }
@@ -27,10 +13,6 @@ function initZoomImages() {
     (entries) => {
       entries.forEach((entry) => {
         entry.target.classList.toggle('is-zoom-active', entry.isIntersecting);
-        debugLog('zoomIntersection', {
-          src: entry.target.getAttribute('src'),
-          isIntersecting: entry.isIntersecting
-        });
       });
     },
     {

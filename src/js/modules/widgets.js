@@ -2,18 +2,6 @@ function parseBooleanAttr(value) {
   return String(value).toLowerCase() === 'true' || String(value) === '1';
 }
 
-function isDebugPage() {
-  const path = window.location.pathname;
-  return path.includes('/motorists') || path.includes('/law-enforcement');
-}
-
-function debugLog(...args) {
-  if (!isDebugPage()) {
-    return;
-  }
-  console.log('[widgets]', ...args);
-}
-
 function restartEnterAnimation(slide) {
   slide.classList.remove('is-entering');
   // Force reflow so the class re-add reliably restarts animation.
@@ -40,15 +28,6 @@ function initSlider(slider) {
   const isFade = animation === 'fade';
   let index = 0;
   let timer = null;
-
-  debugLog('initSlider', {
-    sliderClass: slider.className,
-    slides: slides.length,
-    autoplay,
-    delay,
-    duration,
-    animation
-  });
 
   if (isFade) {
     mask.style.position = 'relative';
@@ -82,18 +61,12 @@ function initSlider(slider) {
   }
 
   function render() {
-    debugLog('render', { index, isFade });
-
     if (isFade) {
       slides.forEach((slide, i) => {
         const active = i === index;
         slide.style.opacity = active ? '1' : '0';
         slide.style.pointerEvents = active ? 'auto' : 'none';
         slide.classList.toggle('is-active', active);
-        const media = slide.querySelector('img');
-        if (media) {
-          media.classList.toggle('is-active-image', active);
-        }
         if (active) {
           restartEnterAnimation(slide);
         } else {
