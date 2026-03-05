@@ -42,10 +42,7 @@
 3. Add explicit form ownership guard:
    - prevent any Webflow form submission handlers from running on owned forms
    - target by form id/class and call `preventDefault` only in owned handler
-4. Add no-cookie policy guardrails:
-   - lint/check step that fails on `document.cookie`
-   - fail on third-party analytics snippets unless explicitly approved
-5. Add baseline measurements (before changing runtime):
+4. Add baseline measurements (before changing runtime):
    - JS transferred size
    - Lighthouse performance snapshot
    - critical interaction checklist (menu, transitions, form success/error)
@@ -104,55 +101,26 @@
 ### Objectives
 - Finalize migration across all pages.
 - Enforce size/performance budgets.
-- Lock in maintainability and no-cookie compliance.
+- Lock in maintainability
 
 ### Tasks
-1. Roll migration across all pages:
-   - `index`, `motorists`, `law-enforcement`, `how-it-works`, etc.
-2. Introduce build pipeline (esbuild or Vite):
+1. Introduce build pipeline (esbuild or Vite):
    - readable source + minified production output
    - tree-shaking, code splitting, sourcemaps
-3. Performance hardening:
+2. Performance hardening:
    - `defer`/`type="module"`
    - preconnect only where used
    - remove dead CSS classes tied to removed Webflow features
-4. Dependency policy:
+3. Dependency policy:
    - CDN for stable vendor libs only when beneficial
    - pin versions + SRI hashes for CDN scripts
    - local vendoring fallback policy documented
-5. Compliance hardening:
-   - automated check for cookie APIs
-   - automated check for unapproved trackers
-   - documentation: “No cookies / no user tracking by default”
 
 ### Deliverables
-- All pages off Webflow runtime.
+- page off Webflow runtime.
 - Production bundle generated from owned source and documented.
-- CI checks for size budgets and cookie/tracker policy.
 
 ### Exit Criteria
 - `webflow.js` and `webflow.chunk.js` fully removed from production pages.
-- No `document.cookie` usage in first-party code.
 - Performance budget met (define target in CI, e.g. JS < 120KB gz per primary page).
 
----
-
-## Suggested Execution Order
-1. Home page pilot (highest traffic + forms).
-2. Shared nav/footer abstractions.
-3. Remaining pages by complexity.
-
-## Risks and Mitigations
-- Risk: animation parity drift.
-  - Mitigation: visual checklist + short screen recordings before/after.
-- Risk: hidden Webflow dependency in markup classes.
-  - Mitigation: migrate feature-by-feature, not all at once.
-- Risk: CDN outage for vendor library.
-  - Mitigation: SRI + optional local fallback for critical dependency.
-
-## Definition of Done (program-level)
-- All runtime JS is owned, readable source.
-- No Webflow runtime scripts in production templates.
-- Forms work with Dialtone endpoint on all pages.
-- No cookie reads/writes in first-party JS.
-- JS footprint substantially smaller and monitored in CI.
