@@ -29,6 +29,64 @@ export function initNav() {
   const isCollapsed = () => window.innerWidth <= collapseAt;
   let isOpen = false;
 
+  function logNavState(stage) {
+    const menuStyles = window.getComputedStyle(navMenu);
+    const links = Array.from(navMenu.querySelectorAll('a'));
+    console.groupCollapsed(`[nav-debug] ${stage}`);
+    console.log('window.innerWidth', window.innerWidth);
+    console.log('collapseAt', collapseAt);
+    console.log('isCollapsed', isCollapsed());
+    console.log('isOpen', isOpen);
+    console.log('navMenu inline styles', navMenu.getAttribute('style'));
+    console.log('navMenu computed', {
+      display: menuStyles.display,
+      visibility: menuStyles.visibility,
+      opacity: menuStyles.opacity,
+      color: menuStyles.color,
+      backgroundColor: menuStyles.backgroundColor,
+      position: menuStyles.position,
+      top: menuStyles.top,
+      zIndex: menuStyles.zIndex,
+      height: menuStyles.height
+    });
+    links.forEach((link, index) => {
+      const style = window.getComputedStyle(link);
+      const rect = link.getBoundingClientRect();
+      const firstChild = link.firstElementChild;
+      const childStyle = firstChild ? window.getComputedStyle(firstChild) : null;
+      console.log(`link[${index}]`, {
+        text: link.textContent?.trim(),
+        className: link.className,
+        inlineStyle: link.getAttribute('style'),
+        rect: {
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height
+        },
+        computed: {
+          display: style.display,
+          visibility: style.visibility,
+          opacity: style.opacity,
+          color: style.color,
+          fontSize: style.fontSize,
+          lineHeight: style.lineHeight
+        },
+        childComputed: childStyle
+          ? {
+              color: childStyle.color,
+              display: childStyle.display,
+              opacity: childStyle.opacity,
+              visibility: childStyle.visibility,
+              fontSize: childStyle.fontSize,
+              lineHeight: childStyle.lineHeight
+            }
+          : null
+      });
+    });
+    console.groupEnd();
+  }
+
   if (!menuButton.getAttribute('tabindex')) {
     menuButton.setAttribute('tabindex', '0');
   }
@@ -47,21 +105,98 @@ export function initNav() {
 
     if (isCollapsed()) {
       navMenu.style.display = isOpen ? 'block' : 'none';
+      navMenu.style.setProperty('background-color', 'var(--white)', 'important');
+      navMenu.style.position = 'absolute';
+      navMenu.style.top = '100%';
+      navMenu.style.left = '0';
+      navMenu.style.right = '0';
+      navMenu.style.zIndex = '999';
+      navMenu.style.setProperty('height', 'auto', 'important');
+      navMenu.style.paddingTop = '24px';
+      navMenu.style.paddingLeft = '24px';
+      navMenu.style.paddingRight = '24px';
+      navMenu.style.paddingBottom = '24px';
+      navMenu.style.overflowY = 'auto';
+      navMenu.style.maxHeight = 'calc(100vh - 64px)';
+
+      navMenu.querySelectorAll('a').forEach((link) => {
+        link.style.setProperty('color', '#0f0a4d', 'important');
+        link.style.setProperty('display', 'block', 'important');
+        link.style.setProperty('height', 'auto', 'important');
+        link.style.setProperty('margin-left', '0', 'important');
+        link.style.setProperty('padding-top', '24px', 'important');
+        link.style.setProperty('padding-bottom', '24px', 'important');
+        link.style.setProperty('opacity', '1', 'important');
+        link.style.setProperty('visibility', 'visible', 'important');
+        link.style.setProperty('text-decoration', 'none', 'important');
+        link.style.setProperty('font-size', '20px', 'important');
+        link.style.setProperty('line-height', '1.4', 'important');
+        link.style.setProperty('position', 'relative', 'important');
+        link.style.setProperty('z-index', '1001', 'important');
+
+        link.querySelectorAll('*').forEach((child) => {
+          child.style.setProperty('color', '#0f0a4d', 'important');
+          child.style.setProperty('display', 'block', 'important');
+          child.style.setProperty('opacity', '1', 'important');
+          child.style.setProperty('visibility', 'visible', 'important');
+          child.style.setProperty('font-size', '20px', 'important');
+          child.style.setProperty('line-height', '1.4', 'important');
+          child.style.setProperty('position', 'relative', 'important');
+          child.style.setProperty('z-index', '1001', 'important');
+        });
+      });
+
       document.body.style.overflow = isOpen ? 'hidden' : '';
     } else {
       navMenu.style.display = '';
+      navMenu.style.backgroundColor = '';
+      navMenu.style.position = '';
+      navMenu.style.top = '';
+      navMenu.style.left = '';
+      navMenu.style.right = '';
+      navMenu.style.zIndex = '';
+      navMenu.style.paddingTop = '';
+      navMenu.style.paddingLeft = '';
+      navMenu.style.paddingRight = '';
+      navMenu.style.paddingBottom = '';
+      navMenu.style.overflowY = '';
+      navMenu.style.maxHeight = '';
+      navMenu.style.height = '';
+
+      navMenu.querySelectorAll('a').forEach((link) => {
+        link.style.color = '';
+        link.style.display = '';
+        link.style.height = '';
+        link.style.marginLeft = '';
+        link.style.paddingTop = '';
+        link.style.paddingBottom = '';
+        link.style.opacity = '';
+        link.style.visibility = '';
+        link.style.textDecoration = '';
+
+        link.querySelectorAll('*').forEach((child) => {
+          child.style.color = '';
+          child.style.opacity = '';
+          child.style.visibility = '';
+        });
+      });
+
       document.body.style.overflow = '';
     }
+
+    logNavState('render');
   }
 
   function openMenu() {
     isOpen = true;
     render();
+    logNavState('openMenu');
   }
 
   function closeMenu() {
     isOpen = false;
     render();
+    logNavState('closeMenu');
   }
 
   function toggleMenu() {
