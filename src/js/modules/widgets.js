@@ -2,6 +2,13 @@ function parseBooleanAttr(value) {
   return String(value).toLowerCase() === 'true' || String(value) === '1';
 }
 
+function restartEnterAnimation(slide) {
+  slide.classList.remove('is-entering');
+  // Force reflow so the class re-add reliably restarts animation.
+  void slide.offsetWidth;
+  slide.classList.add('is-entering');
+}
+
 function initSlider(slider) {
   const mask = slider.querySelector('.w-slider-mask');
   const slides = Array.from(slider.querySelectorAll('.w-slide'));
@@ -59,6 +66,12 @@ function initSlider(slider) {
         const active = i === index;
         slide.style.opacity = active ? '1' : '0';
         slide.style.pointerEvents = active ? 'auto' : 'none';
+        slide.classList.toggle('is-active', active);
+        if (active) {
+          restartEnterAnimation(slide);
+        } else {
+          slide.classList.remove('is-entering');
+        }
       });
     } else {
       mask.style.transform = `translateX(-${index * 100}%)`;
