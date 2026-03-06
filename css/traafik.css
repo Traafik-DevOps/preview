@@ -957,7 +957,7 @@ label {
   padding-left: 0.2rem;
   padding-right: 0.2rem;
 }
-.how-it-works-page .how-it-works-video {
+.how-it-works-video {
   width: min(92vw, 960px);
   aspect-ratio: 16 / 9;
   height: auto;
@@ -1203,7 +1203,7 @@ label {
   .placeholder {
     display: block;
   }
-  .how-it-works-page .how-it-works-video {
+  .how-it-works-video {
     width: min(90vw, 360px);
     margin-top: 1rem;
   }
