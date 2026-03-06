@@ -22,6 +22,7 @@ function initSlider(slider) {
 
   const infinite = parseBooleanAttr(slider.getAttribute('data-infinite'));
   const autoplay = parseBooleanAttr(slider.getAttribute('data-autoplay'));
+  const pauseOnHover = parseBooleanAttr(slider.getAttribute('data-pause-on-hover'));
   const delay = Number.parseInt(slider.getAttribute('data-delay') || '3000', 10);
   const duration = Number.parseInt(slider.getAttribute('data-duration') || '500', 10);
   const animation = (slider.getAttribute('data-animation') || '').toLowerCase();
@@ -125,8 +126,10 @@ function initSlider(slider) {
     rightArrow.addEventListener('click', next);
   }
 
-  slider.addEventListener('mouseenter', stopAutoplay);
-  slider.addEventListener('mouseleave', startAutoplay);
+  if (pauseOnHover) {
+    slider.addEventListener('mouseenter', stopAutoplay);
+    slider.addEventListener('mouseleave', startAutoplay);
+  }
 
   render();
   startAutoplay();
