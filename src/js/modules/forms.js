@@ -93,6 +93,10 @@ function updateFormUiState(form, state) {
 }
 
 function setSubmitButtonLoading(form, isLoading) {
+  if (!form) {
+    return;
+  }
+
   const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
   if (!submitButton) {
     return;
@@ -126,21 +130,22 @@ export function initForms() {
     form.addEventListener(
       'submit',
       async (event) => {
-        if (!isOwnedForm(event.currentTarget)) {
+        const form = event.currentTarget;
+        if (!(form instanceof HTMLFormElement) || !isOwnedForm(form)) {
           return;
         }
 
         event.preventDefault();
         event.stopImmediatePropagation();
-        setSubmitButtonLoading(event.currentTarget, true);
+        setSubmitButtonLoading(form, true);
 
-        const response = await submitOwnedForm(event.currentTarget);
-        setSubmitButtonLoading(event.currentTarget, false);
+        const response = await submitOwnedForm(form);
+        setSubmitButtonLoading(form, false);
 
         if (response && response.status === 201) {
-          updateFormUiState(event.currentTarget, 'success');
+          updateFormUiState(form, 'success');
         } else {
-          updateFormUiState(event.currentTarget, 'error');
+          updateFormUiState(form, 'error');
         }
       },
       { capture: true }
